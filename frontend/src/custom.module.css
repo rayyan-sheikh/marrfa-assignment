@@ -1,0 +1,15 @@
+.searchInput{
+    border: 3px solid #193750 !important;
+    border-right: 0 !important;
+    padding: 0 40px !important;
+    font-size: 1rem !important;
+    height: 3rem !important;
+    font-weight: 500 !important;
+    border-radius: 10px 0 0 10px !important;
+    color: #193750 !important;
+}
+
+.searchInput:focus{
+    border: 3px solid #4caf50 !important;
+    border-right: 0 !important;
+}
