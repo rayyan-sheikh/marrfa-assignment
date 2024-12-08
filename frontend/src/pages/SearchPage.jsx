@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import SearchResultCard from "../components/SearchResultCard";
 import { IconCalendarDown, IconCalendarUp, IconSearch, IconSortAscendingLetters, IconSortDescendingLetters, IconX } from "@tabler/icons-react";
-import { FaSort } from "react-icons/fa";
 import styles from "../custom.module.css";
 
 const SearchPage = () => {
