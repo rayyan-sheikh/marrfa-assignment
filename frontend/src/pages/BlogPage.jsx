@@ -18,7 +18,7 @@ const BlogPage = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/blogs/${blogId}`);
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASEURL}/blogs/${blogId}`);
         if (!response.ok) {
           throw new Error('Blog not found');
         }

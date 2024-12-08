@@ -35,7 +35,7 @@ const SearchPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/blogs");
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASEURL}/blogs`);
         if (!response.ok) {
           throw new Error("Failed to fetch blogs");
         }
