@@ -13,9 +13,10 @@ import {
   Title,
   UnstyledButton,
   Tooltip,
+  Center,
 } from "@mantine/core";
 import SearchResultCard from "../components/SearchResultCard";
-import { IconCalendarDown, IconCalendarUp, IconSearch, IconSortAscendingLetters, IconSortDescendingLetters, IconX } from "@tabler/icons-react";
+import { IconCalendarDown, IconCalendarUp, IconChevronLeft, IconChevronRight, IconSearch, IconSortAscendingLetters, IconSortDescendingLetters, IconX } from "@tabler/icons-react";
 import styles from "../custom.module.css";
 
 const SearchPage = () => {
@@ -54,19 +55,18 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
 
   useEffect(() => {
     setCurrentPage(1);
+  
+    let filtered = [...blogs];
 
-    let filtered = blogs;
     if (searchQuery) {
       const query = searchQuery.toLowerCase().trim();
-
+  
       filtered = filtered.filter((blog) => {
         const title = blog.title ? blog.title.toLowerCase().trim() : "";
         const content = blog.content ? blog.content.toLowerCase().trim() : "";
         const author = blog.author ? blog.author.toLowerCase().trim() : "";
-        const tags = Array.isArray(blog.tags)
-          ? blog.tags.map((tag) => tag.toLowerCase())
-          : [];
-
+        const tags = Array.isArray(blog.tags) ? blog.tags.map((tag) => tag.toLowerCase()) : [];
+  
         return (
           title.includes(query) ||
           content.includes(query) ||
@@ -75,31 +75,43 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
         );
       });
     }
-
+  
     if (sortOption) {
       filtered = filtered.sort((a, b) => {
-        const titleA = a.title.toLowerCase();
-    const titleB = b.title.toLowerCase();
-
-    if (sortOption === "name_asc") {
-      return titleA.localeCompare(titleB);
-    }
-    if (sortOption === "name_desc") {
-      return titleB.localeCompare(titleA);
-    }
-
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-
-        if (sortOption === "date_asc") return dateA - dateB;
-        if (sortOption === "date_desc") return dateB - dateA;
-
+        // Sorting by title (name_asc, name_desc)
+        if (sortOption === "name_asc" || sortOption === "name_desc") {
+          const titleA = a.title ? a.title.toLowerCase() : "";
+          const titleB = b.title ? b.title.toLowerCase() : "";
+  
+          if (sortOption === "name_asc") {
+            return titleA.localeCompare(titleB);
+          }
+          if (sortOption === "name_desc") {
+            return titleB.localeCompare(titleA);
+          }
+        }
+        if (sortOption === "date_asc" || sortOption === "date_desc") {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+  
+          if (sortOption === "date_asc") {
+            return dateB - dateA;
+          }
+          if (sortOption === "date_desc") {
+            return dateA - dateB;
+          }
+        }
+  
         return 0;
       });
     }
-
+  
+    // Update the filtered blogs state
     setFilteredBlogs(filtered);
   }, [searchQuery, sortOption, blogs]);
+  
+  
+  
 
   const menuStyles = (option) => {
     const isSelected = sortOption === option;
@@ -114,6 +126,18 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
   const indexOfLastBlog = currentPage * blogsPerPage;
   const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
   const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredBlogs.length / blogsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <Box bg={`${color}`}>
@@ -182,7 +206,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("name_asc")}
   >
-    Name A to Z
+    Title A to Z
   </Menu.Item>
 
   <Menu.Item
@@ -194,7 +218,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("name_desc")}
   >
-    Name Z to A
+    Title Z to A
   </Menu.Item>
 
   <Menu.Item
@@ -206,7 +230,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("date_asc")}
   >
-    Latest
+    Latest First
   </Menu.Item>
 
   <Menu.Item
@@ -218,7 +242,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("date_desc")}
   >
-    Oldest
+    Oldest First
   </Menu.Item>
 </Menu.Dropdown>
           </Menu>
@@ -254,15 +278,16 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
               mb={150}
               w="100%"
             >
-              <Flex justify="center" w={"100%"}>
-                <Pagination
-                  page={currentPage}
-                  onChange={setCurrentPage}
-                  total={Math.ceil(filteredBlogs.length / blogsPerPage)}
-                  color="#193750"
-                  size="md"
-                  autoContrast
-                />
+              <Flex style={{userSelect:"none"}} justify="center" align={"center"} gap={10} w={"100%"}>
+                <Tooltip label="Previous Page">
+                  <IconChevronLeft stroke={3} onClick={handlePreviousPage} style={{cursor:"pointer"}} color={`${text}`}/>
+                </Tooltip>
+                <Text fw={400} c={`${text}`} fz={18}>
+                  Page <span style={{fontWeight:700}}>{currentPage} </span> of <span style={{fontWeight:700}}>{Math.ceil(filteredBlogs.length / blogsPerPage)}</span>
+                </Text>
+                <Tooltip label="Next Page">
+                  <IconChevronRight stroke={3} onClick={handleNextPage} style={{cursor:"pointer"}} color={`${text}`}/>
+                </Tooltip>
               </Flex>
               {currentBlogs.length > 0 ? (
                 currentBlogs.map((blog) => (
