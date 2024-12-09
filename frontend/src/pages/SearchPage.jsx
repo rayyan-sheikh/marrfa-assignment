@@ -31,11 +31,11 @@ const SearchPage = () => {
   const [sortOption, setSortOption] = useState("name_asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [blogsPerPage] = useState(5);
-
+const url=import.meta.env.VITE_REACT_APP_BASEURL
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASEURL}/blogs`);
+        const response = await fetch(`${url}/blogs`);
         if (!response.ok) {
           throw new Error("Failed to fetch blogs");
         }
@@ -227,9 +227,9 @@ const SearchPage = () => {
       >
         {loading && <Loader h={"100vh"} color="cyan.9" />}
         {error && (
-          <Flex direction="column" align="center">
+          <Flex h={"100vh"} direction="column" align="center">
             <Text c="red">{error}</Text>
-            <Button mt="sm" onClick={() => window.location.reload()}>
+            <Button mt="sm" color="cyan.9" onClick={() => window.location.reload()}>
               Retry
             </Button>
           </Flex>
