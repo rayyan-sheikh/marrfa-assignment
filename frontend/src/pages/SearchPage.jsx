@@ -78,8 +78,15 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
 
     if (sortOption) {
       filtered = filtered.sort((a, b) => {
-        if (sortOption === "name_asc") return a.title.localeCompare(b.title);
-        if (sortOption === "name_desc") return b.title.localeCompare(a.title);
+        const titleA = a.title.toLowerCase();
+    const titleB = b.title.toLowerCase();
+
+    if (sortOption === "name_asc") {
+      return titleA.localeCompare(titleB);
+    }
+    if (sortOption === "name_desc") {
+      return titleB.localeCompare(titleA);
+    }
 
         const dateA = new Date(a.createdAt);
         const dateB = new Date(b.createdAt);
@@ -199,7 +206,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("date_asc")}
   >
-    Date Ascending
+    Latest
   </Menu.Item>
 
   <Menu.Item
@@ -211,7 +218,7 @@ const url=import.meta.env.VITE_REACT_APP_BASEURL
     }
     onClick={() => setSortOption("date_desc")}
   >
-    Date Descending
+    Oldest
   </Menu.Item>
 </Menu.Dropdown>
           </Menu>
